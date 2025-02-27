@@ -7,10 +7,14 @@ import { indexRepo } from "../../../lib/embeddings";
 export const POST = async (req) => {
   const session=await auth()
   if (!session) {
-    return {
-      status: 401,
-      data: { message: "Unauthorized" },
-    };
+    return Response.json(
+      {
+        data: {
+          message: "Unauthorized",
+        },
+      },
+      { status: 401 }
+    );
   }
   try {
     await connect();

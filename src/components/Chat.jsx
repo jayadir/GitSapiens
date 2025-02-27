@@ -53,7 +53,7 @@ export default function Chat({ id }) {
   return (
     <div>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[75vw">
           <DialogHeader>
             <DialogTitle>Chat Response</DialogTitle>
           </DialogHeader>
