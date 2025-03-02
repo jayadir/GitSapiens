@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { readStreamableValue } from 'ai/rsc';
+import { readStreamableValue } from "ai/rsc";
 
 import {
   Card,
@@ -23,6 +23,7 @@ import {
 } from "./ui/card";
 import { Button } from "./ui/button";
 import { askQuestion } from "../actions/chat";
+import CodeBlock from "./CodeBlock";
 
 export default function Chat({ id }) {
   // console.log("id", id);
@@ -35,14 +36,14 @@ export default function Chat({ id }) {
     e.preventDefault();
     // console.log("id",
     // id);
-    
-    if (!id || !message.trim()) return; 
+
+    if (!id || !message.trim()) return;
     setDialogOpen(true);
-    setResponse(""); 
+    setResponse("");
     console.log("id", id);
     const { op, files } = await askQuestion(message, id);
     setFiles(files);
-    
+
     for await (const chunk of readStreamableValue(op)) {
       if (chunk) {
         setResponse((prev) => prev + chunk); // Ensure proper state updates
@@ -53,20 +54,17 @@ export default function Chat({ id }) {
   return (
     <div>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[75vw">
+        <DialogContent className="w-[85vw] h-[85vh] max-w-none">
           <DialogHeader>
             <DialogTitle>Chat Response</DialogTitle>
           </DialogHeader>
-          
-            <div className="overflow-auto h-64">
-              <MDEditor.Markdown source={response} className="max-w-[85vw] !h-full max-h-[75vh] overflow-scroll"/>
-              {console.log(files)}
-            {files.map((file, index) => (
-              <div key={index}>
-                <div className="font-bold">{file.fileName}</div>
-              </div>
-            ))}</div>
-          
+          <div className="overflow-auto h-full">
+            <MDEditor.Markdown
+              source={response}
+              className="max-w-full !h-full overflow-scroll"
+            />
+            <CodeBlock fileDetails={files} />
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -76,10 +74,10 @@ export default function Chat({ id }) {
         </CardHeader>
         <CardContent>
           <form onSubmit={submitHandler}>
-            <Input 
-              placeholder="Start typing your query..." 
-              value={message} 
-              onChange={(e) => setMessage(e.target.value)} 
+            <Input
+              placeholder="Start typing your query..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
             />
             <div className="h-4"></div>
             <Button type="submit">Send</Button>

@@ -30,7 +30,7 @@ export const askQuestion = async (question, projectId) => {
     const files=[]
     for (const result of filteredResults) {
       const projectFile = await ProjectFiles.findById(result.id);
-      files.push(projectFile);
+      files.push(JSON.parse(JSON.stringify(projectFile)));
       context += `name of the file is ${projectFile.fileName}\n and the contents of the file are: ${projectFile.fileContent}\n summary of the code:${projectFile.summary}\n\n`;
     }
     console.log(context);
