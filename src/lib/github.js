@@ -82,3 +82,23 @@ export const fetchUpdatedCommits=async(id)=>{
   const newCommits=await Commits.find({projectId:id});
   return newCommits;
 }
+
+export const fetchUserSkills=async(githubUrl)=>{
+  const username=githubUrl.split("/").slice(-1)[0];
+  const {data}=await octokit.rest.users.getByUsername({
+    username
+  });
+  const {data:repoData}=await octokit.rest.repos.listForUser({
+    username
+  });
+  const skills=repoData.map((repo)=>{
+    return repo.language;
+  }).filter((skill)=>skill);
+  const skillsSet=Array.from(new Set(skills));
+
+  return {
+    name:data.name,
+    avatar:data.avatar_url,
+    skillsSet
+  }
+}

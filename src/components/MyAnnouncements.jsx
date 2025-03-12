@@ -20,6 +20,7 @@ import { IconCirclePlus } from "@tabler/icons-react";
 import { createAnnouncement } from "../actions/announcement";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import { Checkbox } from "./ui/checkbox";
 
 export default function MyAnnouncements() {
   const { data: session, status } = useSession();
@@ -29,7 +30,9 @@ export default function MyAnnouncements() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const fetchData = async () => {
-    const res = await axios.get(`/api/fetch-userannouncements/${session.user._id}`);
+    const res = await axios.get(
+      `/api/fetch-userannouncements/${session.user._id}`
+    );
     console.log(res.data);
     setAnnouncements(res.data.data.announcements);
   };
@@ -139,11 +142,21 @@ export default function MyAnnouncements() {
                   type="date"
                 />
               </LabelInputContainer> */}
+              <div className="flex items-center space-x-2 m-2 mb-4">
+                <Checkbox id="terms" />
+                <label
+                  htmlFor="terms"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Accept terms and conditions
+                </label>
+              </div>
+             
               <Button
                 className="bg-gradient-to-br relative group/btn from-black mx-1 dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
                 type="submit"
               >
-                Sign up &rarr;
+                Submit &rarr;
               </Button>
               {/* </div> */}
             </form>
@@ -151,13 +164,17 @@ export default function MyAnnouncements() {
         </DialogContent>
       </Dialog>
       <div className="overflow-y-scroll h-full">
-        <HoverEffect items={announcements
-          .map((announcement) => ({
-            title: announcement.title,
-            description: announcement.description.split(" ").slice(0, 10).join(" ") + "...",
-            link: `/announcement/${announcement._id}`,
-          }))
-          .reverse()} />
+        <HoverEffect
+          items={announcements
+            .map((announcement) => ({
+              title: announcement.title,
+              description:
+                announcement.description.split(" ").slice(0, 10).join(" ") +
+                "...",
+              link: `/announcement/${announcement._id}`,
+            }))
+            .reverse()}
+        />
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ const schema = new mongoose.Schema({
     username: { type: String },
     bio: { type: String },
     image: { type: String },
-    userProjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserAndProject' }]
+    userProjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserAndProject' }],
+    skills: [{ type: String }],
 })
 export default mongoose.models.User || mongoose.model('User', schema)

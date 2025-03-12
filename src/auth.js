@@ -2,6 +2,8 @@ import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import { connect } from "./lib/db";
 import User from "./models/User";
+import axios from "axios";
+import { fetchUserSkills } from "./lib/github";
 import { redirect } from "next/dist/server/api-utils";
 export const options = {
   providers: [
@@ -17,8 +19,11 @@ export const options = {
         const existingUser = await User.findOne({
           providerId: account.providerAccountId,
         });
-        // console.log("user", user);
         // console.log("account", account);
+        // user.githubUrl = user.html_url;
+        // console.log("user", user);
+        const userUrl=await axios.get(`https://api.github.com/user/${account.providerAccountId}`);
+        const userSkills = await fetchUserSkills(userUrl.data.url);
         if (!existingUser) {
           await new User({
             name: user.name,
@@ -27,6 +32,7 @@ export const options = {
             username: user.login,
             bio: user.bio,
             image: user.image,
+            skills: userSkills,
           }).save();
         }
         return true;

@@ -9,7 +9,16 @@ import {
   IconUserBolt,
   IconRobot,
   IconCirclePlus,
+  IconBriefcase2,
 } from "@tabler/icons-react";
+import ProfileDialog from "../../components/ProfileDialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
 import { useProjects } from "../../hooks/useProjects";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -43,7 +52,7 @@ export function SidebarDemo({ children }) {
   const links = [
     {
       label: "Dashboard",
-      href: "#",
+      href: "/dashboard",
       icon: <IconBrandTabler className="text-white h-5 w-5 flex-shrink-0" />,
     },
     {
@@ -52,9 +61,9 @@ export function SidebarDemo({ children }) {
       icon: <IconUserBolt className="text-white h-5 w-5 flex-shrink-0" />,
     },
     {
-      label: "Settings",
-      href: "#",
-      icon: <IconSettings className="text-white h-5 w-5 flex-shrink-0" />,
+      label: "Project Announcements",
+      href: "/announcements",
+      icon: <IconBriefcase2 className="text-white h-5 w-5 flex-shrink-0" />,
     },
     {
       label: "Ask",
@@ -71,8 +80,11 @@ export function SidebarDemo({ children }) {
         "h-screen"
       )}
     >
-      <Sidebar open={open} setOpen={setOpen} className="z-20 fixed h-screen left-0 top-0" >
-
+      <Sidebar
+        open={open}
+        setOpen={setOpen}
+        className="z-20 fixed h-screen left-0 top-0"
+      >
         <SidebarBody className="justify-between gap-10 bg-neutral-900">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             {open ? <Logo /> : <LogoIcon />}
@@ -103,22 +115,32 @@ export function SidebarDemo({ children }) {
           </div>
 
           <div>
-            <SidebarLink
-              link={{
-                label: session.user.name,
-                href: "#",
-                icon: (
-                  <Image
-                    src={session.user.image}
-                    className="h-7 w-7 flex-shrink-0 rounded-full"
-                    width={50}
-                    height={50}
-                    alt="Avatar"
-                  />
-                ),
-              }}
-              className="text-white"
-            />
+            <Dialog>
+              <DialogTrigger asChild>
+                <SidebarLink
+                  link={{
+                    label: session.user.name,
+                    href: "#",
+                    icon: (
+                      <Image
+                        src={session.user.image}
+                        className="h-7 w-7 flex-shrink-0 rounded-full"
+                        width={50}
+                        height={50}
+                        alt="Avatar"
+                      />
+                    ),
+                  }}
+                  className="text-white"
+                />
+              </DialogTrigger>
+              <DialogContent className="dark:bg-gray-800 dark:text-white max-w-md p-6 rounded-xl">
+                <DialogHeader>
+                  <DialogTitle>Profile</DialogTitle>
+                </DialogHeader>
+                <ProfileDialog user={session.user._id}/>
+              </DialogContent>
+            </Dialog>
           </div>
         </SidebarBody>
       </Sidebar>
@@ -147,18 +169,6 @@ export const Logo = () => {
   );
 };
 const Projects = () => {
-  // const projectsList = [
-  //   {
-  //     label: "Project 1",
-  //     href: "#",
-  //     icon: <IconBrandTabler className="text-white h-5 w-5 flex-shrink-0" />,
-  //   },
-  //   {
-  //     label: "Project 2",
-  //     href: "#",
-  //     icon: <IconBrandTabler className="text-white h-5 w-5 flex-shrink-0" />,
-  //   },
-  // ];
   const { projects: projectsList, loading, error } = useProjects();
   console.log(projectsList);
   if (loading) return <p>Loading...</p>;
