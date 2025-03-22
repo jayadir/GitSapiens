@@ -10,6 +10,7 @@ import {
   IconRobot,
   IconCirclePlus,
   IconBriefcase2,
+  IconZoomCode,
 } from "@tabler/icons-react";
 import ProfileDialog from "../../components/ProfileDialog";
 import {
@@ -56,9 +57,9 @@ export function SidebarDemo({ children }) {
       icon: <IconBrandTabler className="text-white h-5 w-5 flex-shrink-0" />,
     },
     {
-      label: "Profile",
-      href: "#",
-      icon: <IconUserBolt className="text-white h-5 w-5 flex-shrink-0" />,
+      label: "Browse Issues",
+      href: "/issues",
+      icon: <IconZoomCode className="text-white h-5 w-5 flex-shrink-0" />,
     },
     {
       label: "Project Announcements",
