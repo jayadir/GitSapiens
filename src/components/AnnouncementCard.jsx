@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const AnnouncementCard = ({ announcement }) => {
   return (
-    <Card className="bg-black  text-white shadow-lg border border-white">
+    <Card className="bg-black  text-white shadow-lg border border-white border-solid ">
       <CardHeader>
         <CardTitle className="text-xl font-bold">
           {announcement.title}

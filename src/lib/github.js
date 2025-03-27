@@ -102,3 +102,24 @@ export const fetchUserSkills=async(githubUrl)=>{
     skillsSet
   }
 }
+
+export const fetchIssues = async (data) => {
+  try{
+    const octokit=new Octokit({
+      auth:process.env.GITHUB_PAT
+    });
+    const { state, language, sort, order, label, pageNumber } = data;
+    const res=await octokit.request('GET /search/issues',{
+      q:`state:${state}+language:${language}+label:"${label}"`,
+      sort:sort,
+      order:order,
+      per_page:30,
+      page:pageNumber
+    }); 
+    // console.log(res);
+    return res;
+
+  } catch (error) {
+    console.log(error);
+  }
+}

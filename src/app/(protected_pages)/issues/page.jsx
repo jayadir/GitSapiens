@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -8,24 +8,51 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../../components/ui/dialog";
+import {Badge} from "../../../components/ui/badge";
 import { IconFilter } from "@tabler/icons-react";
 import clsx from "clsx";
+import {fetch_issues} from "../../../actions/fetch-issues";
 import { Button } from "../../../components/ui/button";
-import { Tooltip, TooltipProvider } from "../../../components/ui/tooltip";
-
+import { Tooltip, TooltipProvider,TooltipTrigger,TooltipContent } from "../../../components/ui/tooltip";
+import axios from "axios";
+import IssueCard from "../../../components/IssueCard";
 export default function Page() {
+  // const [firstRender, setFirstRender] = useState(true);
+  const [pageNumber, setPageNumber] = useState(1);
   const { setValue, handleSubmit } = useForm();
+  const [issues, setIssues] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState({
     state: "open",
     language: "javascript",
     sort: "created",
     order: "desc",
-    labels: [],
+    label: "good first issue",
+    pageNumber
   });
 
   const options = {
     state: ["open", "closed"],
-    language: ["javascript", "python", "java", "c++", "go", "rust"],
+    language: [
+      "javascript",
+      "python",
+      "java",
+      "c++",
+      "go",
+      "rust",
+      "html",
+      "dart",
+      "shell",
+      "css",
+      "php",
+      "ruby",
+      "swift",
+      "typescript",
+      "kotlin",
+      "c#",
+      "r",
+      "scala",
+      "perl",
+    ],
     sort: ["created", "updated", "comments"],
     order: ["desc", "asc"],
     labels: [
@@ -46,35 +73,48 @@ export default function Page() {
       { name: "wontfix", description: "This will not be worked on" },
     ],
   };
-
+  useEffect(() => {
+    // if (firstRender) {
+      console.log("fetching issues")
+      // setFirstRender(false);
+      fetch_issues(selectedFilters).then((res) => {
+        setIssues(res.data);
+        console.log(res.data)
+      });
+    // }
+  },[])
   const handleFilterChange = (type, value) => {
     setValue(type, value);
     setSelectedFilters((prev) => ({ ...prev, [type]: value }));
   };
 
-  const toggleLabelSelection = (label) => {
-    setSelectedFilters((prev) => {
-      const newLabels = prev.labels.includes(label)
-        ? prev.labels.filter((l) => l !== label)
-        : [...prev.labels, label];
+  // const toggleLabelSelection = (label) => {
+  //   setSelectedFilters((prev) => {
+  //     const newLabels = prev.labels.includes(label)
+  //       ? prev.labels.filter((l) => l !== label)
+  //       : [...prev.labels, label];
 
-      setValue("labels", newLabels);
-      return { ...prev, labels: newLabels };
-    });
-  };
+  //     setValue("labels", newLabels);
+  //     return { ...prev, labels: newLabels };
+  //   });
+  // };
 
-  const onSubmit = (data) => {
-    console.log("Filters Applied:", {
-      ...data,
-      labels: selectedFilters.labels,
-    });
+  const onSubmit = async (data) => {
+    // console.log("Filters Applied:", {
+    //   ...selectedFilters
+    //   // labels: selectedFilters.labels,
+    // });
+    // console.log("sending request")
+    const res=await fetch_issues(selectedFilters);
+    // console.log(res)
+    setIssues(res.data);
   };
 
   return (
-    <div className="container ml-1 w-full overflow-x-hidden text-white">
+    <div className="container ml-1 w-full overflow-x-hidden h-[100vh] overflow-y-hidden scrollbar-hide text-white">
       <h1 className="text-3xl font-semibold text-center">Browse Issues</h1>
 
-      <Dialog >
+      <Dialog>
         <DialogTrigger asChild>
           <div className="inline-flex items-center px-4 py-2 border border-white text-white bg-transparent rounded-md cursor-pointer transition duration-300 hover:bg-white hover:text-black">
             Filters <IconFilter className="ml-1" size={20} />
@@ -176,17 +216,22 @@ export default function Page() {
                 <div className="flex flex-wrap gap-2">
                   {options.labels.map((label) => (
                     <Tooltip key={label.name} text={label.description}>
-                      <Button
-                        onClick={() => toggleLabelSelection(label.name)}
-                        className={clsx(
-                          "px-4 py-2 border border-white rounded-md text-sm transition",
-                          selectedFilters.labels.includes(label.name)
-                            ? "bg-blue-600 text-white"
-                            : "bg-gray-800 text-white hover:bg-white hover:text-black"
-                        )}
-                      >
-                        {label.name.toUpperCase()}
-                      </Button>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={() => handleFilterChange("label",label.name)}
+                          className={clsx(
+                            "px-4 py-2 border border-white rounded-md text-sm transition",
+                            selectedFilters.label=== label.name
+                              ? "bg-blue-600 text-white"
+                              : "bg-gray-800 text-white hover:bg-white hover:text-black"
+                          )}
+                        >
+                          {label.name.toUpperCase()}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{label.description}</p>
+                      </TooltipContent>
                     </Tooltip>
                   ))}
                 </div>
@@ -204,6 +249,11 @@ export default function Page() {
       </Dialog>
 
       <hr className="border-gray-600 mt-2 border-t-[0.5px] border-solid" />
+      <div className="flex flex-wrap gap-4 mt-4 mx-2 h-[70vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+        {issues?.map((issue) => (
+          <IssueCard key={issue.id} issue={issue} />
+        ))}
+      </div>
     </div>
   );
 }

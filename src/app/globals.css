@@ -9,6 +9,22 @@ body {
   margin: 0;
   padding: 0;
 }
+.scrollbar-thin {
+  scrollbar-width: thin; /* For Firefox */
+}
+
+.scrollbar-dark::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-track {
+  background: transparent; /* Hide white background */
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2); /* Light gray thumb */
+  border-radius: 6px;
+}
 
 @layer base {
   :root {
