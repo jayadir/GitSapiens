@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const AnnouncementCard = ({ announcement }) => {
   return (
-    <Card className="bg-black  text-white shadow-lg border border-white border-solid ">
+    <Card className="bg-black  text-white shadow-lg border border-white border-solid">
       <CardHeader>
         <CardTitle className="text-xl font-bold">
           {announcement.title}
@@ -42,7 +42,7 @@ const AnnouncementCard = ({ announcement }) => {
             {announcement.isOpen ? "Open" : "Closed"}
           </div>
         </div>
-        <div className="flex justify-between">
+        <div className="flex flex-wrap gap-2 justify-start">
           {announcement.projectUrl && (
             <Link href={announcement.projectUrl} target="_blank">
               <Button

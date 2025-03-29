@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
+import axios from "axios";
+import {Spinner } from "../../components/ui/spinner";
 import { Sidebar, SidebarBody, SidebarLink } from "../../components/ui/sidebar";
 // import {octokit}
 import {
@@ -12,6 +14,7 @@ import {
   IconCirclePlus,
   IconBriefcase2,
   IconZoomCode,
+  IconTrash,
 } from "@tabler/icons-react";
 import ProfileDialog from "../../components/ProfileDialog";
 import {
@@ -30,6 +33,7 @@ import Image from "next/image";
 import { cn } from "../../lib/utils";
 import { Button } from "../../components/ui/button";
 import { useRouter } from "next/navigation";
+import ProjectComponent from "../../components/ProjectComponent";
 export default function Layout({ children }) {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -140,7 +144,7 @@ export function SidebarDemo({ children }) {
                 <DialogHeader>
                   <DialogTitle>Profile</DialogTitle>
                 </DialogHeader>
-                <ProfileDialog user={session.user._id}/>
+                <ProfileDialog user={session.user._id} />
               </DialogContent>
             </Dialog>
           </div>
@@ -170,7 +174,17 @@ export const Logo = () => {
     </Link>
   );
 };
+const handleDeleteProject = async (projectId) => {
+  try {
+    const response = await axios.delete(`/api/delete-project/${projectId}`);
+    console.log(response.data.message);
+  } catch (error) {
+    console.error("Error deleting project:", error);
+  }
+  // const { projects: projectsList, loading, error } = useProjects();
+}
 const Projects = () => {
+  
   const { projects: projectsList, loading, error } = useProjects();
   console.log(projectsList);
   if (loading) return <p>Loading...</p>;
@@ -179,20 +193,11 @@ const Projects = () => {
     <div className="mt-8 flex flex-col gap-2">
       <h3 className="text-white  font-medium">Projects</h3>
       {projectsList?.map((project, idx) => (
-        <Link
+        <ProjectComponent
           key={idx}
-          href={`project/${project._id}` || "#"}
-          className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20"
-        >
-          <div className="h-5 w-6 bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="font-medium text-white whitespace-pre"
-          >
-            {project.projectName}
-          </motion.span>
-        </Link>
+          project={project}
+          className="text-white"
+        />
       ))}
 
       <Button className="w-full">
