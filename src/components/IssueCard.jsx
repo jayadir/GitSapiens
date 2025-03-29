@@ -25,7 +25,7 @@ export default function IssueCard({ issue }) {
   const previewDesc = body?.slice(0, 100).concat("...");
   return (
     <div>
-      <Card className="bg-black text-white shadow-lg border border-white border-solid">
+      <Card className="bg-black text-white shadow-lg border border-white border-solid lg:w-[84vw] max-w-[85vw]">
         <CardHeader>
           <CardTitle className="text-xl font-bold">{title}</CardTitle>
         </CardHeader>

@@ -163,9 +163,9 @@ export const Logo = () => {
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="font-medium text-white whitespace-pre"
+        className=" text-white whitespace-pre font-bold text-lg"
       >
-        Acet Labs
+        GitSapiens
       </motion.span>
     </Link>
   );

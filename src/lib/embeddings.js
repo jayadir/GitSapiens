@@ -56,7 +56,7 @@ export const embeddSummary = async (docs) => {
   const models=[geminiModel,groqModel,mistralModel];
   return await Promise.allSettled(
     docs.map(async (doc) => {
-      delay(500)
+      await delay(500)
       const model=models[Math.floor(Math.random()*models.length)];
       const summary = await codeSummary(doc,model);
       const embedding = await generateSummaryEmbedding(summary);
