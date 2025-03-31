@@ -23,9 +23,20 @@ export const askQuestion = async (question, projectId) => {
       includeMetadata: true,
     });
     console.log(res);
-    const filteredResults = res.matches
+    let filteredResults = res.matches
       .filter((match) => match.score >= 0.5)
       .sort((a, b) => b.score - a.score);
+    if(filteredResults.length===0){
+      filteredResults = res.matches
+        .filter((match) => match.score >= 0.2)
+        .sort((a, b) => b.score - a.score);
+    }
+    if(filteredResults.length===0){
+      filteredResults = res.matches
+        .filter((match) => match.score >= 0.15)
+        .sort((a, b) => b.score - a.score);
+    }
+
     let context = "";
     const files=[]
     for (const result of filteredResults) {

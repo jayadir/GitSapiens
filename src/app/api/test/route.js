@@ -15,8 +15,8 @@ import { loadRepo } from "../../../lib/langchain";
 import { GetModels } from "../../../lib/langchain";
 export const GET = async (req) => {
   try {
-    const res = await fetchUserSkills("https://github.com/jayadir")
-    console.log(res);
+    // const res = await fetchUserSkills("https://github.com/jayadir")
+    // console.log(res);
 //     const { geminiModel, groqModel, mistralModel } = await GetModels();
 //     const mistralCode = `
 // import { MistralAIEmbeddings } from "@langchain/mistralai";
@@ -40,7 +40,8 @@ export const GET = async (req) => {
 //     ));
     // console.log(await generateSummaryEmbedding("This commit fixes a bug in the `calculateSum` function by replacing a subtraction operation with an addition, ensuring that the function correctly computes the sum of two numbers."));
 
-    // const res=await loadRepo("https://github.com/excalidraw/excalidraw",process.env.GITHUB_PAT,"master");
+    const res=await loadRepo("https://github.com/excalidraw/excalidraw",process.env.GITHUB_PAT,"master");
+    console.log(res.length)
     // summarize("https://github.com/excalidraw/excalidraw","9ee0b8ffcbd3664a47748a93262860321a203821").then((res)=>{
     //     console.log(res);
     // });

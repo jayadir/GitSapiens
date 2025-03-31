@@ -123,3 +123,12 @@ export const fetchIssues = async (data) => {
     console.log(error);
   }
 }
+
+export const fetchRepositoryIssues=async(url)=>{
+  const [owner,repo]=url.split("/").slice(-2);
+  const {data}=await octokit.rest.issues.listForRepo({
+    owner,
+    repo
+  });
+  return data;
+} 

@@ -1,6 +1,6 @@
 import { loadRepo } from "./langchain";
 // import { } from "./embeddings";
-import { codeSummary,generateSummaryEmbedding  } from "./gemini";
+import { codeSummary, generateSummaryEmbedding } from "./gemini";
 import ProjectFiles from "../models/ProjectFiles";
 import { getPineconeClient } from "./pinecone";
 // import { metadata } from "@/app/layout";
@@ -18,7 +18,7 @@ export const indexRepo = async (
       console.log(`Indexing ${index + 1} ${embedding.value.fileName}`);
 
       if (!embedding.value.summary) {
-        console.log(`Failed to index ${index + 1} ${embedding.value.fileName}`);
+        console.log(`Failed to index ${index + 1} ${embedding.value.fileName}, error:${embedding?.error}`);
         return;
       }
       try {
@@ -41,32 +41,69 @@ export const indexRepo = async (
           },
         ]);
       } catch (error) {
-        console.log(`Failed to index ${index + 1} ${embedding.fileName}`, error);
+        console.log(
+          `Failed to index ${index + 1} ${embedding.fileName}`,
+          error
+        );
       }
     })
   );
 };
-const delay=(time)=>{
-  return new Promise((resolve)=>{
-    setTimeout(resolve,time);
+const delay = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
   });
-}
+};
 export const embeddSummary = async (docs) => {
+  console.log(docs.length);
   const { geminiModel, groqModel, mistralModel } = await GetModels();
-  const models=[geminiModel,groqModel,mistralModel];
-  return await Promise.allSettled(
-    docs.map(async (doc) => {
-      await delay(500)
-      const model=models[Math.floor(Math.random()*models.length)];
-      const summary = await codeSummary(doc,model);
+  const models = [geminiModel, groqModel, mistralModel];
+  
+  const results = [];
+  const delayTime = docs.length > 70 ? 1000 : 500
+  for (let i = 0; i < docs.length; i++) {
+    const doc = docs[i];
+    
+    if (i > 0) {
+      await delay(1000);
+    }
+    
+    let model;
+    if (i % 3 == 0) {
+      model = geminiModel;
+    } else if (i % 3 == 1) {
+      model = groqModel;
+    } else if (i % 3 == 2) {
+      model = mistralModel;
+    }
+    
+    console.log(
+      `Processing document ${i + 1} with model: ${model?.constructor?.name}`
+    );
+    
+    if (!model) {
+      console.error(`No model assigned for index ${i}`);
+      results.push({ status: 'rejected', reason: "No model selected" });
+      continue;
+    }
+    
+    try {
+      const summary = await codeSummary(doc, model);
       const embedding = await generateSummaryEmbedding(summary);
-      console.log(doc.metadata.source);
-      return {
-        summary,
-        embedding,
-        sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
-        fileName: doc.metadata.source,
-      };
-    })
-  );
+      
+      results.push({
+        status: 'fulfilled',
+        value: {
+          summary,
+          embedding,
+          sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
+          fileName: doc.metadata.source,
+        }
+      });
+    } catch (error) {
+      results.push({ status: 'rejected', reason: error });
+    }
+  }
+  
+  return results;
 };
