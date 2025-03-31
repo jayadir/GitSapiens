@@ -48,25 +48,25 @@ export const fetch_repository_issues=async (url)=>{
   }
   const cacheKey = `repository_issues:${url}`;
   const cachedData = await redis.get(cacheKey);
-  // try {
-  //   if (cachedData) {
-  //     console.log("cache hit");
-  //     return JSON.parse(cachedData);
-  //   } else {
-  //     console.log("cache miss");
-  //   }
-  // } catch (error) {
-  //   console.log("error in fetching cache", error);  
-  // }
   try {
-    console.log("processing request");
+    if (cachedData) {
+      console.log("cache hit");
+      return JSON.parse(cachedData);
+    } else {
+      console.log("cache miss");
+    }
+  } catch (error) {
+    console.log("error in fetching cache", error);  
+  }
+  try {
+    // console.log("processing request");
     const response = await fetchRepositoryIssues(url)
     console.log(response)
     // console.log(response.data.items.length);
     // const linkHeader=response.headers.link
     // const hasNextPage=linkHeader && linkHeader.includes('rel="next"')
     const responseData = {
-      data: response?.data?.items,
+      data: response,
       // hasNextPage
     };
     await redis.set(cacheKey, JSON.stringify(responseData), 'EX', 60 * 60 * 24); 

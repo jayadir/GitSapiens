@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import {useAttachemntsStore} from "../../../lib/store";
 import {
   Dialog,
   DialogTrigger,
@@ -17,6 +18,7 @@ import { Tooltip, TooltipProvider,TooltipTrigger,TooltipContent } from "../../..
 import axios from "axios";
 import IssueCard from "../../../components/IssueCard";
 export default function Page() {
+  const {addAttachment} = useAttachemntsStore()
   // const [firstRender, setFirstRender] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
   const { setValue, handleSubmit } = useForm();
@@ -73,6 +75,7 @@ export default function Page() {
       { name: "wontfix", description: "This will not be worked on" },
     ],
   };
+  
   useEffect(() => {
     // if (firstRender) {
       console.log("fetching issues")
@@ -83,6 +86,9 @@ export default function Page() {
       });
     // }
   },[])
+  const handleAddAttachment=(projectId,issue)=>{
+    addAttachment(projectId,issue)
+  }
   const handleFilterChange = (type, value) => {
     setValue(type, value);
     setSelectedFilters((prev) => ({ ...prev, [type]: value }));
@@ -251,7 +257,7 @@ export default function Page() {
       <hr className="border-gray-600 mt-2 border-t-[0.5px] border-solid" />
       <div className="flex flex-wrap gap-4 mt-4 mx-2 h-[70vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
         {issues?.map((issue) => (
-          <IssueCard key={issue.id} issue={issue} />
+          <IssueCard key={issue.id} issue={issue} handleAddAttachment={handleAddAttachment}  />
         ))}
       </div>
     </div>

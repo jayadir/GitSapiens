@@ -24,8 +24,9 @@ export default function Page() {
       console.log(response);
       reset();
       if (response.status === 200) {
-        router.push("/dashboard");
+        router.push(`/project/${response.data.data.project._id}`);
       }
+      setIsSubmitting(false);
 
     } catch (error) {
       console.log(error);
@@ -82,7 +83,7 @@ export default function Page() {
           type="submit"
           disabled={isSubmitting}
         >
-          Submit &rarr;
+          {!isSubmitting ? <p>Submit &rarr;</p> : "Submitting..."}
           <BottomGradient />
         </button>
       </form>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -11,6 +11,7 @@ import { Globe, User, CheckCircle, Clock, Info, Github } from "lucide-react";
 import { IconPlus } from "@tabler/icons-react";
 import MDEditor from "@uiw/react-md-editor";
 import { Badge } from "./ui/badge";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogTitle,
@@ -19,10 +20,29 @@ import {
   DialogTrigger,
   DialogHeader,
 } from "./ui/dialog";
-export default function IssueCard({ issue }) {
+import { Spinner } from "./ui/spinner";
+import axios from "axios";
+export default function IssueCard({ issue, disableAdd = false,handleAddAttachment,projectId="" }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const { title, body, labels, comments, created_at, updated_at, html_url } =
     issue || {};
   const previewDesc = body?.slice(0, 100).concat("...");
+  const handleAddProject = async () => {
+    setLoading(true);
+    const projectName=issue.repository_url.split("/")[-1]
+    const res=await axios.post("/api/create-project", { repositoryUrl: issue?.repository_url,projectName })
+    if (res.status === 200) {
+      handleAddAttachment(projectId,issue)
+      router.push(`/project/${res.data.data.project._id}`);
+    } else {
+      console.error("Error adding project:", res.data.message);
+    }
+    setLoading(false);
+  };
+  const handleAttachment = async () => {
+    handleAddAttachment(projectId,issue)
+  };
   return (
     <div>
       <Card className="bg-black text-white shadow-lg border border-white border-solid lg:w-[84vw] max-w-[85vw]">
@@ -76,13 +96,28 @@ export default function IssueCard({ issue }) {
                   </DialogHeader>
                   <MDEditor.Markdown source={body} />
                   <DialogFooter>
-                    <Button
-                      //   variant="outline"
-                      className="border-gray-600"
-                    >
-                      <IconPlus size={16} />
-                      Add Project For AI Chat
-                    </Button>
+                    {disableAdd ? (
+                      <Button
+                        //   variant="outline"
+                        className="border-gray-600"
+                        onClick={handleAttachment}
+                        disabled={loading}
+                      >
+                        <IconPlus size={16} />
+                        Attach for chat {loading && <Spinner size="small" />}
+                      </Button>
+                    ) : (
+                      <Button
+                        //   variant="outline"
+                        className="border-gray-600"
+                        onClick={handleAddProject}
+                        disabled={loading}
+                      >
+                        <IconPlus size={16} />
+                        {loading ? "Adding" : "Add Project For AI Chat"}{" "}
+                        {loading && <Spinner size="small" />}
+                      </Button>
+                    )}
                     <Button
                       variant="outline"
                       className="text-gray-300 border-gray-600"
