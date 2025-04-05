@@ -6,18 +6,22 @@ import { generateSummaryEmbedding } from "../lib/gemini";
 import { getPineconeClient } from "../lib/pinecone";
 import Chat from "../models/ChatModel";
 import ProjectFiles from "../models/ProjectFiles";
+import {auth} from "../auth"
 import { connect } from "../lib/db";
+
 const model = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
 export const askQuestion = async (question, projectId, attachments = []) => {
+  const session = await auth();
+  const userId=session?.user?._id;
   console.log(projectId);
   try {
     await connect();
-    let chat = await Chat.findOne({ projectId });
+    let chat = await Chat.findOne({ projectId, userId });
     if (!chat) {
-      chat = new Chat({ projectId, messages: [] });
+      chat = new Chat({ projectId,userId, messages: [] });
     }
     chat.messages.push({ role: "user", content: question });
 

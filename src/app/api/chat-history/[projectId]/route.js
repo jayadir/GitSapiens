@@ -12,7 +12,7 @@ export const GET=async(requestAnimationFrame,{params})=>{
     }
     try {
         await connect()
-        const history=await Chat.findOne({projectId})
+        const history=await Chat.findOne({projectId,userId:session?.user._id})
         if(!history){
             return Response.json(
                 {data:{message:"No chat history found"}},

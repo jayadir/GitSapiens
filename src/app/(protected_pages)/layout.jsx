@@ -15,6 +15,8 @@ import {
   IconBriefcase2,
   IconZoomCode,
   IconTrash,
+  IconTextPlus,
+  IconBrandHipchat,
 } from "@tabler/icons-react";
 import ProfileDialog from "../../components/ProfileDialog";
 import {
@@ -72,9 +74,10 @@ export function SidebarDemo({ children }) {
       icon: <IconBriefcase2 className="text-white h-5 w-5 flex-shrink-0" />,
     },
     {
-      label: "Ask",
-      href: "#",
-      icon: <IconRobot className="text-white h-5 w-5 flex-shrink-0" />,
+      label: "Chats",
+      href: "/chats",
+      icon: <IconBrandHipchat className="text-white h-5 w-5 flex-shrink-0" />,
+      // icon: <IconRobot className="text-white h-5 w-5 flex-shrink-0" />,
     },
   ];
 

@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/(protected_pages)/dashboard/page.jsx", "src/app/auth/signin/page.jsx"  ],
+, "src/app/(protected_pages)/dashboard/page.jsx", "src/app/auth/signin/page.jsx", "src/app/(protected_pages)/chats/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]

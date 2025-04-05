@@ -96,11 +96,7 @@ export const fetchUserSkills=async(githubUrl)=>{
   }).filter((skill)=>skill);
   const skillsSet=Array.from(new Set(skills));
 
-  return {
-    name:data.name,
-    avatar:data.avatar_url,
-    skillsSet
-  }
+  return skillsSet
 }
 
 export const fetchIssues = async (data) => {
