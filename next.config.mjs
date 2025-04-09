@@ -4,6 +4,7 @@ const nextConfig = {
     images:{
         domains:['avatars.githubusercontent.com']
     },
+    reactStrictMode: false
     // webpack(config) {
     //     config.resolve.alias['@'] = path.join(__dirname, '/');
     //     return config;

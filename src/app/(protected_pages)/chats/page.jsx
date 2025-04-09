@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import GroupCard from "../../../components/GroupCard";
 import Loading from "../../../components/Loading";
+import { useRouter } from "next/navigation";
 export default function page() {
   const { data: session, status } = useSession();
   const [groups, setGroups] = useState([]);

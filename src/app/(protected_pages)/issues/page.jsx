@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {useAttachemntsStore} from "../../../lib/store";
+import {useAttachmentsStore} from "../../../lib/store";
 import {
   Dialog,
   DialogTrigger,
@@ -18,7 +18,7 @@ import { Tooltip, TooltipProvider,TooltipTrigger,TooltipContent } from "../../..
 import axios from "axios";
 import IssueCard from "../../../components/IssueCard";
 export default function Page() {
-  const {addAttachment} = useAttachemntsStore()
+  const {addAttachment} = useAttachmentsStore()
   // const [firstRender, setFirstRender] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
   const { setValue, handleSubmit } = useForm();

@@ -8,7 +8,12 @@ import {
   CardDescription,
 } from "./ui/card";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 export default function GroupCard({ group }) {
+  const router = useRouter();
+  const handleClick = () => {
+    router.push(`/chats/${group._id}`);
+  };
   return (
     <Card className="bg-black text-white shadow-lg border border-white border-solid">
       <CardContent>
@@ -23,7 +28,7 @@ export default function GroupCard({ group }) {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
-        <Button variant="outline" className="text-gray-300 border-gray-600">
+        <Button variant="outline" className="text-gray-300 border-gray-600" onClick={handleClick}>
           open
         </Button>
       </CardFooter>

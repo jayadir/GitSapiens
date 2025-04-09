@@ -73,47 +73,47 @@ export default function Chat({ id, issueId = null, issueName = null }) {
   };
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("submitting");
-    return;
-    // if (!id || !message.trim()) return;
+    // console.log("submitting");
+    // return;
+    if (!id || !message.trim()) return;
 
-    // const userMessage = message.trim();
-    // setMessage("");
-    // setIsLoading(true);
+    const userMessage = message.trim();
+    setMessage("");
+    setIsLoading(true);
 
-    // setChatHistory((prev) => {
-    //   return Array.isArray(prev)
-    //     ? [...prev, { role: "user", content: userMessage }]
-    //     : [{ role: "user", content: userMessage }];
-    // });
+    setChatHistory((prev) => {
+      return Array.isArray(prev)
+        ? [...prev, { role: "user", content: userMessage }]
+        : [{ role: "user", content: userMessage }];
+    });
 
-    // try {
-    //   const { op, files } = await askQuestion(userMessage, id, attachments);
-    //   setFiles(files);
+    try {
+      const { op, files } = await askQuestion(userMessage, id, attachments);
+      setFiles(files);
 
-    //   let aiResponse = "";
-    //   for await (const chunk of readStreamableValue(op)) {
-    //     if (chunk) {
-    //       aiResponse += chunk;
-    //       setResponse((prev) => prev + chunk);
-    //     }
-    //   }
+      let aiResponse = "";
+      for await (const chunk of readStreamableValue(op)) {
+        if (chunk) {
+          aiResponse += chunk;
+          setResponse((prev) => prev + chunk);
+        }
+      }
 
-    //   setChatHistory((prev) => [...prev, { role: "ai", content: aiResponse }]);
-    //   setResponse("");
-    // } catch (error) {
-    //   console.error("Error submitting question:", error);
-    //   setChatHistory((prev) => [
-    //     ...prev,
-    //     {
-    //       role: "ai",
-    //       content:
-    //         "Sorry, I encountered an error processing your request. Please try again.",
-    //     },
-    //   ]);
-    // } finally {
-    //   setIsLoading(false);
-    // }
+      setChatHistory((prev) => [...prev, { role: "ai", content: aiResponse }]);
+      setResponse("");
+    } catch (error) {
+      console.error("Error submitting question:", error);
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          role: "ai",
+          content:
+            "Sorry, I encountered an error processing your request. Please try again.",
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const ChatMessage = ({ message, isLatestAi }) => (
@@ -345,7 +345,7 @@ export default function Chat({ id, issueId = null, issueName = null }) {
               </Button>
             </div>
           </form>
-          <Dialog >
+          <Dialog className="h-[80vh] overflow-y-scroll">
             <DialogTrigger asChild>
               <Button
                 onClick={handleGenerateDiagram}
@@ -355,7 +355,7 @@ export default function Chat({ id, issueId = null, issueName = null }) {
                 {isLoading ? "Generating..." : "Generate Diagram"}
               </Button>
             </DialogTrigger>
-            <DialogContent className="w-[85vw] h-[95vh] max-w-none p-0 bg-gray-300 border-gray-800">
+            <DialogContent className="w-[85vw] h-[95vh] overflow-y-scroll max-w-none p-0 bg-gray-300 border-gray-800">
               <DialogHeader className="px-6 py-4 border-b border-gray-800">
                 <DialogTitle className="text-black">
                   Generated Diagram
