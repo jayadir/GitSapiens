@@ -35,7 +35,7 @@
     "ignore": "^5.3.2",
     "ioredis": "^5.6.0",
     "lucide-react": "^0.475.0",
-    "mermaid": "^11.6.0",
+    "mermaid": "^11.10.0",
     "mongoose": "^8.10.0",
     "motion": "^12.4.1",
     "next": "15.1.6",
